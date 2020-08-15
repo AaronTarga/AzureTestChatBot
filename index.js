@@ -15,7 +15,7 @@ const restify = require('restify');
 const { BotFrameworkAdapter } = require('botbuilder');
 
 // This bot's main dialog.
-const { EchoBot } = require('./bot');
+const { MyBot } = require('./bot');
 
 // Create HTTP server
 const server = restify.createServer();
@@ -33,6 +33,12 @@ const adapter = new BotFrameworkAdapter({
     channelService: process.env.ChannelService,
     openIdMetadata: process.env.BotOpenIdMetadata
 });
+
+const configuration = {
+    knowledgeBaseId: process.env.QnAKnowledgebaseId,
+    endpointKey: process.env.QnAAuthKey,
+    host: process.env.QnAEndpointHostName
+ };
 
 // Catch-all for errors.
 const onTurnErrorHandler = async (context, error) => {
@@ -58,7 +64,7 @@ const onTurnErrorHandler = async (context, error) => {
 adapter.onTurnError = onTurnErrorHandler;
 
 // Create the main dialog.
-const myBot = new EchoBot();
+const myBot = new MyBot(configuration, {});
 
 // Listen for incoming requests.
 server.post('/api/messages', (req, res) => {
